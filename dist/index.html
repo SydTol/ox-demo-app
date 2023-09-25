@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/solid-file-client@1.0.0/dist/window/solid-file-client.bundle.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/solid-auth-client@2.3.0/dist-lib/solid-auth-client.bundle.js"></script>
+  <link rel="stylesheet" href="my-demo.css" />
+  <script src="src/maidenhead.js"></script>
+  <script defer src="./index.js"></script>
+
+
+
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="content">
+      <header>
+        <h2>Demo</h2>
+      </header>
+      <section id="testing" class="panel">
+        <div class="row">
+          <label>1. Upload something</label>
+          <span id="labeltesting"></span>
+        </div>
+        <div>
+          <label id="labelbuttonupload" for="testingUpload">Upload Button</label>
+          <input type="file" id="fileinput" multiple>
+          <button name="btnUpload" id="btnUpload">Upload Files</button>
+        </div>
+      </section>
+      <section id="login" class="panel">
+        <div class="row">
+          <label id="labelIdP" for="select-idp">2. Select your Identity Provider: </label>
+          <select id="select-idp" name="select-idp">
+            <option value="">--Please select an Identity Provider (IdP)--</option>
+            <!-- Update the select-idp option if not using PodSpaces -->
+            <option value="https://login.inrupt.com">https://login.inrupt.com (PodSpaces)</option>
+            <option value="https://test.pod.ewada.ox.ac.uk">test.pod.ewada</option>
+          </select>
+          <button name="btnLogin" id="btnLogin">Login</button>
+        </div>
+      </section>
+      <div id="read" class="panel">
+        <div class="row">
+          <label id="readlabel" for="myWebID">Logged in with your WebID: </label>
+          <input type="text" id="myWebID" name="myWebID" size="50" disabled>
+        </div>
+      </div>
+      <div id="results" class="panel">
+        <div class="row">
+          <div>
+            <h3>Preferences</h3>
+            <p>Location:</p>
+            <input type="range" class="control-slider" id="control-location-detail-slider" min="1" max="10" value="1">
+
+            <p>Time: </p>
+            <input type="range" class="control-slider" id="control-display-detail-slider" min="1" max="10" value="1">
+            <div>
+              <button name="btnShow" id="btnShow">Save Settings</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div id="phone" class="hidden">
+      <div class="maps-container">
+        <div id="map"></div>
+        <!-- <div id="map2"></div> -->
+      </div>
+      <!-- <div id="timeDetails">
+        <div class="dropdown">
+          <select id="dropdownSelect">
+            <option value="1" style="color: grey;">Default Time</option>
+            <option value="2">Hour</option>
+            <option value="3">Day</option>
+            <option value="4">Week</option>
+          </select>
+        </div>
+        <input type="range" id="timeSlider" min="1" max="10" value="2">
+        <div id="sliderValue"></div>
+      </div>
+      <div id="locDetails">
+        <label>Location:</label> -->
+
+
+    </div>
+
+  </div>
+  </div>
+
+</body>
+
+</html>

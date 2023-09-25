@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 12
+os:
+  - linux
+  - osx
+  - windows
+env:
+  - TEST_PREFIX=app://ls/
+  - TEST_PREFIX=file://
+script:
+  - npm run test:travis
