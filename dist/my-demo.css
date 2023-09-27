@@ -16,10 +16,7 @@ body {
    flex-direction: column;
 }
 
-.panel {
-   flex-basis: calc(50% - 10px); /* Adjust as needed */
-   margin: 5px;
-}
+
 
 
 
@@ -41,6 +38,8 @@ header {
 }
 
 .panel {
+   flex: 1;
+   width: 70%;
    border: 1px solid #005b81;
    border-radius: 4px;
    box-shadow: rgb(184, 196, 194) 0px 4px 10px -4px;
@@ -49,6 +48,9 @@ header {
    padding: 1rem 1.5rem;
    margin: 1rem 1.2rem 1rem 1.2rem;
 }
+.hidden {
+   display: none;
+ }
 
 #login {
    background: white;
@@ -69,15 +71,15 @@ header {
 }
 
 .container{
-   display: flex;
+   display: none;
    flex-direction: row;
    align-items: center;
+   justify-content: space-between;
    
    /* Container styles with a fixed width */
-   width: 90%; /* Adjust as needed */
+   width: 70%; /* Adjust as needed */
    /* max-width: 1200px; Set a maximum width if necessary */
-   margin: 0 auto; /* Center the container horizontally */
-   /* Add any other container-specific styles */
+   
 
 }
 
