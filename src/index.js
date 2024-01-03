@@ -8,27 +8,13 @@ import {
 
 // Import from "@inrupt/solid-client"
 import {
-  addUrl,
-  addStringNoLocale,
-  createSolidDataset,
-  createThing,
-  getPodUrlAll,
-  getPodUrlAllFrom,
-  getSolidDataset,
-  getWebIdDataset,
-  getThingAll,
-  getStringNoLocale,
-  removeThing,
-  saveSolidDatasetAt,
-  setThing,
-  saveFileInContainer,
-  isRawData,
   getContentType,
   overwriteFile,
   getSourceUrl,
   getFile
 } from "@inrupt/solid-client";
 
+// Define URLs and elements
 const ChildPodLink = "https://test.pod.ewada.ox.ac.uk/SydChaOx/Location/";
 const SharedPodLink = "https://test.pod.ewada.ox.ac.uk/SydChaOx/Sharing/";
 const selectorIdP = document.querySelector("#select-idp");
@@ -42,6 +28,7 @@ const page2 = document.getElementById("page2");
 const page3 = document.getElementById("page3");
 const waitpage = document.getElementById("waitingpage");
 
+// Initialize data arrays and map variables
 let detailedData = [];
 const locradValues = [25, 50, 75, 100, 150, 200, 300, 400, 500, 600];
 let currentData = [];
@@ -51,7 +38,7 @@ var pmap = [];
 var locdet = 1;
 var disdet = 1;
 
-// 1a. Start Login Process. Call login() function.
+// Function to initiate login to a selected Identity Provider (IDP)
 function loginToSelectedIdP() {
   const SELECTED_IDP = document.getElementById("select-idp").value;
 
@@ -62,19 +49,17 @@ function loginToSelectedIdP() {
   });
 }
 
-// 1b. Login Redirect. Call handleIncomingRedirect() function.
-// When redirected after login, finish the process by retrieving session information.
+// Function to handle redirects after successful login
 async function handleRedirectAfterLogin() {
-
-
-
-  await handleIncomingRedirect(); // no-op if not part of login redirect
+  await handleIncomingRedirect(); 
 
   const session = getDefaultSession();
+  // Hide page1 and display waitpage during authentication
+
   if (session.info.isLoggedIn) {
     page1.style.display = "none";
     waitpage.style.display = "block";
-    // Update the page with the status.
+    // Update the page with the user's WebID and switch to the appropriate view
     document.getElementById("myWebID").value = session.info.webId;
     waitpage.style.display = "none";
     if (session.info.webId === "https://test.pod.ewada.ox.ac.uk/SydChaOx/profile/card#me") {
@@ -91,6 +76,7 @@ async function handleRedirectAfterLogin() {
   }
 }
 
+// Function to initialize the Leaflet map
 function makeMap() {
   map = L.map('map').setView([51.4774, 0.0007], 13);
 
@@ -100,24 +86,26 @@ function makeMap() {
   }).addTo(map);
 }
 
-
+// Trigger the redirect handling after login
 handleRedirectAfterLogin();
 
+// Function to fetch and display child's smartwatch data
 async function childViewData() {
   try {
-    // const auth = solid.auth;
+    // Authenticate and read the folder content from the ChildPodLink
     const auth = getDefaultSession();
     const fc = new SolidFileClient(auth);
     const folder = await fc.readFolder(ChildPodLink);
 
+    // Read the SmartwatchData file from the SharedPodLink
     const fileBlob = await getFile(`${SharedPodLink}SmartwatchData`, { fetch: fetch });
-    // console.log(fileBlob)
-    // Use Promise.all to await all the asynchronous file reading operations
+
+    // Read the content of each file in the folder
     const promises = folder.files.map(file => fc.readFile(file.url));
     const data = await Promise.all(promises);
 
+    // Process smartwatch data into coordinate points
     smartwatchData = data;
-    console.log(smartwatchData[0]);
     const singleString = smartwatchData[0];
     const coordinateStrings = singleString.split('\n');
     detailedData = coordinateStrings.map(coordStr => {
@@ -125,6 +113,7 @@ async function childViewData() {
       return [lat, lon];
     });
 
+    // Generate and display data on the map
     genData();
     makeMap();
     genShapes();
@@ -136,6 +125,7 @@ async function childViewData() {
   }
 
 }
+// Function to read a file from the pod
 async function readFileFromPod(fileURL) {
   try {
     const file = await getFile(
@@ -152,36 +142,36 @@ async function readFileFromPod(fileURL) {
   }
 }
 
-
-
+// Function to fetch and display parent's smartwatch data
 async function parentViewData() {
   try {
     
+    // Authenticate and read the SmartwatchData file from the SharedPodLink
     const auth = getDefaultSession();
     const fc = new SolidFileClient(auth);
     const blob = await readFileFromPod(`${SharedPodLink}SmartwatchData`);
 
-    // Extract the text content from the Blob
+    // Extract text content and parse JSON
     const jsonText = await blob.text();
-
-    // Parse the JSON text into an object
     const jsonObject = JSON.parse(jsonText);
 
+    // Extract data and display on the Leaflet map
     currentData = jsonObject.currentData;
     locdet = jsonObject.locationSlider;
     disdet = jsonObject.timeSlider;
-    console.log(jsonObject.currentData);
-    console.log(currentData);
 
+    // Initialize Leaflet map for parent view
     pmap = L.map('pmap').setView([51.4774, 0.0007], 13);
-    console.log(pmap)
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(pmap);
+
+    // Create a layer group for parent's marker and clear existing layers
     var pmarkerLayer = L.layerGroup();
     pmarkerLayer.clearLayers();
-
+    
+    // Display parent's current data as circle markers on the map
     if (currentData && currentData.length > 0) {
       for (const coordinates of currentData) {
         const [latitude, longitude] = coordinates; // Destructure the array into latitude and longitude
@@ -205,7 +195,7 @@ async function parentViewData() {
 
 }
 
-
+// Function to overwrite the shared array in the parent's pod
 async function overwriteSharedArray() {
   try {
     const dataToSave = {
@@ -234,7 +224,7 @@ async function overwriteSharedArray() {
 }
 
 
-
+// Event listeners for login, save, and IDP selection
 
 buttonLogin.onclick = function () {
   loginToSelectedIdP();
@@ -256,12 +246,12 @@ function idpSelectionHandler() {
 }
 
 
+// Initialize Leaflet marker layer for child's data
 
 var markerLayer = L.layerGroup();
 
+// Function to generate shapes (circles) on the map based on current data
 function genShapes() {
-
-
   markerLayer.clearLayers();
   if (currentData && currentData.length > 0) {
     for (const coordinates of currentData) {
@@ -281,6 +271,7 @@ function genShapes() {
 
 }
 
+// Function to generate data based on location and display sliders
 function genData() {
 
   const locdetIncrement = 0.0002 * locationDetailSlider.value;
@@ -293,7 +284,7 @@ function genData() {
 
 }
 
-
+// Event listeners for sliders
 locationDetailSlider.addEventListener("input", function () {
   locdet = parseInt(locationDetailSlider.value);
 
